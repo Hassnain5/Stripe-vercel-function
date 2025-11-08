@@ -1,12 +1,7 @@
 {
-  "name": "stripe-vercel-function",
+  "name": "stripe-function",
   "version": "1.0.0",
-  "type": "module",
-  "main": "api/index.js",
-  "scripts": {
-    "start": "node api/index.js"
-  },
   "dependencies": {
-    "stripe": "^19.2.0"
+    "stripe": "^15.0.0"
   }
 }
