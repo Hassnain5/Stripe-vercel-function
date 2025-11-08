@@ -2,30 +2,26 @@ import express from "express";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 
-dotenv.config(); // Load STRIPE_SECRET_KEY from Railway env
+dotenv.config();
 
 const app = express();
 app.use(express.json());
 
-// Initialize Stripe with secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// ✅ Root route for testing
-app.get("/", (req, res) => {
-  res.send("✅ Stripe payment API is running!");
-});
-
-// ✅ Payment Intent endpoint
-app.post("/create-payment-intent", async (req, res) => {
+// CORS setup
+app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
   if (req.method === "OPTIONS") {
-    res.status(204).send("");
-    return;
+    return res.sendStatus(204);
   }
+  next();
+});
 
+// Stripe endpoint
+app.post("/create-payment-intent", async (req, res) => {
   try {
     const { amount, currency } = req.body;
 
@@ -46,6 +42,5 @@ app.post("/create-payment-intent", async (req, res) => {
   }
 });
 
-// Railway sets the PORT automatically
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
