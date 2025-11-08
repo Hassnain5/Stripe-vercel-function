@@ -8,7 +8,12 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === "OPTIONS") {
-    res.status(204).send("");
+    res.status(204).end();
+    return;
+  }
+
+  if (req.method !== "POST") {
+    res.status(405).json({ error: "Method not allowed" });
     return;
   }
 
@@ -25,9 +30,9 @@ export default async function handler(req, res) {
       automatic_payment_methods: { enabled: true },
     });
 
-    res.json({ clientSecret: paymentIntent.client_secret });
+    res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
-    console.error("❌ Stripe Error:", error);
+    console.error("Stripe error:", error);
     res.status(500).json({ error: error.message });
   }
 }
